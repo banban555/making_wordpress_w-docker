@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  nginx:
+    build: requirements/nginx
+    container_name: nginx
+    ports:
+      - "443:443"
+    restart: always
+    networks:
+      - wordpress_server
+    env_file:
+      - .env
+    volumes:
+      - wp:/var/www/wordpress
+
+  mariadb:
+    build: requirements/mariadb
+    container_name: mariadb
+    ports:
+      - "3306:3306"
+    restart: always
+    networks:
+      - wordpress_server
+    env_file:
+      - .env
+    volumes:
+      - database:/var/lib/mysql
+
+  wordpress:
+    depends_on:
+      - mariadb
+    build: requirements/wordpress
+    container_name: wordpress
+    ports:
+      - "9000:9000"
+    restart: always
+    networks:
+      - wordpress_server
+    env_file:
+      - .env
+    volumes:
+      - wp:/var/www/wordpress
+
+networks:
+  wordpress_server:
+
+volumes:
+  database:
+    driver_opts:
+      o: bind
+      type: volume
+      device: /home/seshin/data/database
+
+  wp:
+    driver_opts:
+      o: bind
+      type: volume
+      device: /home/seshin/data/wordpress
