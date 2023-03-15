@@ -1,2 +1,1 @@
-# 42inception
-on ubutu20.04.2
+# making_wordpress_w-docker
